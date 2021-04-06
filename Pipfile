@@ -1,0 +1,18 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+selenium = "*"
+psycopg2 = "*"
+psycopg2-binary = "*"
+boto3 = "*"
+instagram-basic-display = "*"
+requests = "*"
+python-dateutil = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.9"
