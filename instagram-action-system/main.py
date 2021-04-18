@@ -76,6 +76,8 @@ class WebDriver :
                     return True
                 return False
             except :
+                import traceback
+                traceback.print_exc()
                 return None
         else :
             try :
@@ -128,6 +130,8 @@ def login(web, account) :
     web.click(config['XPATH']['LOGIN_BTN'])
     sleep(5)
     web.access(config['SET']['URL'])
+    if web.check(config['XPATH']['LOGIN_NOTICE']) :
+        web.click(config['XPATH']['LOGIN_NOTICE'])
 
 def logout(web) :
     web.access(config['SET']['URL'])
@@ -191,7 +195,9 @@ def hashtagAction(web, user) :
     web.click(config['XPATH']['HASH_NEW_POST_BTN'])
     print(f'ハッシュタグ名：{hashtag}')
 
-    for i in range(10) :
+    hash_counter = 0
+
+    while hash_counter < 10 :
         try :
             post_username = web.text(config['XPATH']['HASH_POST_USERNAME'])
             print(f'投稿者：{post_username}')
@@ -200,30 +206,39 @@ def hashtagAction(web, user) :
             cur.execute(f"insert into main_subcompetitors (user_id, username, finished, created_at, updated_at) values ({user['id']}, '{post_username}', 'False', '{time_now}', '{time_now}');")
 
             connection.commit()
+            try :
+                web.click(config['XPATH']['HASH_POST_LIKE_BTN'])
+                web.click(config['XPATH']['HASH_POST_LIKED_ACCOUNT_BTN'])
+            except :
+                break
 
-            web.click(config['XPATH']['HASH_POST_LIKE_BTN'])
-            web.click(config['XPATH']['HASH_POST_LIKED_ACCOUNT_BTN'])
-
-            limit = range(random.randint(2, 4))
+            limit = random.randint(2, 4)
             i = 1
-            while True :
+            while i < limit :
                 notfollowed = web.check(f'/html/body/div[6]/div/div/div[2]/div/div/div[{i}]/div[3]/button', 'フォローする')
 
                 if notfollowed == False:
+                    print('con')
+                    i += 1
                     continue
                 elif notfollowed == None :
-                    break
+                    print('cont')
+                    i += 1
+                    continue
 
                 username = web.text(f'/html/body/div[6]/div/div/div[2]/div/div/div[{i}]/div[2]/div[1]/div/span/a')
 
                 web.click(f'/html/body/div[6]/div/div/div[2]/div/div/div[{i}]/div[3]/button')
                 i += 1
                 counter += 1
+                hash_counter += 1
                 sleep(int(config['PROGRAM']['ACTION_SLEEP']))
 
             web.click(config['XPATH']['HASH_POST_LIKED_ACCOUNT_BACK_BTN'])
             web.click(config['XPATH']['HASH_POST_NEXT_BTN'])
         except :
+            import traceback
+            traceback.print_exc()
             web.click(config['XPATH']['HASH_POST_NEXT_BTN'])
 
     cur.execute(f"update main_users set counter = '{user['counter'] + 1}' where id = '{user['id']}';")
@@ -283,6 +298,8 @@ def competitorAction(web, user) :
             i+=1
             sleep(int(config['PROGRAM']['ACTION_SLEEP']))
         except :
+            import traceback
+            traceback.print_exc()
             print('Error: アクションエラー')
             break
 
@@ -309,6 +326,7 @@ def competitorAction(web, user) :
                 sleep(int(config['PROGRAM']['ACTION_SLEEP']))
         except :
             print('Error: アクションエラー')
+            break
         break
 
     connection = psycopg2.connect(
@@ -444,6 +462,8 @@ def main(action_time_set = 'TEST') :
                 hashtagAction(web, user)
             except :
                 print('Error: ハッシュタグアクション中にエラーが発生しました。ログアウトします。')
+                import traceback
+                traceback.print_exc()
                 updateStatus(user)
                 logout(web)
                 continue
