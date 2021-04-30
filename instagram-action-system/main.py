@@ -215,8 +215,7 @@ def hashtagAction(web, user) :
             limit = random.randint(2, 4)
             i = 1
             while i < limit :
-                notfollowed = web.check(f'/html/body/div[6]/div/div/div[2]/div/div/div[{i}]/div[3]/button', 'フォローする')
-
+                notfollowed = web.check(f'/html/body/div[5]/div/div/div[2]/div/div/div[{i}]/div[3]/button', 'フォローする')
                 if notfollowed == False:
                     print('con')
                     i += 1
@@ -282,18 +281,17 @@ def competitorAction(web, user) :
     i = 1
     while i <= limit :
         try :
-            notfollowed = web.check(f'/html/body/div[5]/div/div/div[2]/ul/div/li[{i}]/div/div[3]/button', 'フォローする')
-
+            notfollowed = web.check(f'/html/body/div[4]/div/div/div[2]/ul/div/li[{i}]/div/div[3]/button', 'フォローする')
             if notfollowed == False:
                 i+=1
                 continue
             elif notfollowed == None :
                 break
 
-            username = web.text(f'/html/body/div[5]/div/div/div[2]/ul/div/li[{i}]/div/div[2]/div[1]/div/div/span/a')
+            username = web.text(f'/html/body/div[4]/div/div/div[2]/ul/div/li[{i}]/div/div[2]/div[1]/div/div/span/a')
             print(username)
 
-            web.click(f'/html/body/div[5]/div/div/div[2]/ul/div/li[{i}]/div/div[3]/button')
+            web.click(f'/html/body/div[4]/div/div/div[2]/ul/div/li[{i}]/div/div[3]/button')
             counter += 1
             i+=1
             sleep(int(config['PROGRAM']['ACTION_SLEEP']))
