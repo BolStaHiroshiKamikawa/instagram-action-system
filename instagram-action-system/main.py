@@ -217,11 +217,9 @@ def hashtagAction(web, user) :
             while i < limit :
                 notfollowed = web.check(f'/html/body/div[5]/div/div/div[2]/div/div/div[{i}]/div[3]/button', 'フォローする')
                 if notfollowed == False:
-                    print('con')
                     i += 1
                     continue
                 elif notfollowed == None :
-                    print('cont')
                     i += 1
                     continue
 
